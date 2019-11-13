@@ -1,24 +1,34 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import RecipeList from '../RecipeList/RecipeList';
 
 class RecipeSearcher extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.state = {
             recipes:[]
         }
     }
 
+    componentDidMount() {
+        this.getRecipeByName('beef');
+    }
+
     getRandomRecipe = () => {
+
+        const _this = this;
+
         axios({
             /* We can configure everything we need to about the HTTP request in here */
             method: 'GET',
             url: 'https://www.themealdb.com/api/json/v1/1/random.php'
         })
         .then(function(response) {
-            console.log(response);
+            _this.setState({
+                recipes: response.data.meals || []
+            })
         })
         .catch(function(error) {
             console.log(error);
@@ -26,6 +36,9 @@ class RecipeSearcher extends Component {
     }
 
     getRecipeByName = name => {
+
+        const _this = this;
+
         axios({
             method: 'GET',
             url: 'https://www.themealdb.com/api/json/v1/1/search.php',
@@ -34,7 +47,9 @@ class RecipeSearcher extends Component {
             }
         })
         .then(function(response) {
-            console.log(response);
+            _this.setState({
+                recipes: response.data.meals || []
+            });
         })
         .catch(function(response) {
             console.log(response);
@@ -42,6 +57,9 @@ class RecipeSearcher extends Component {
     }
 
     getRecipesByLetter = letter => {
+
+        const _this = this;
+
         axios({
             method: 'GET',
             url: 'https://www.themealdb.com/api/json/v1/1/search.php',
@@ -50,7 +68,9 @@ class RecipeSearcher extends Component {
             }
         })
         .then(function(response) {
-            console.log(response);
+            _this.setState({
+                recipes: response.data.meals || []
+            });
         })
         .catch(function(error) {
             console.log(error);
@@ -59,12 +79,9 @@ class RecipeSearcher extends Component {
 
     render() {
 
-        this.getRandomRecipe();
-        this.getRecipeByName('Chicken');
-        this.getRecipesByLetter('L');
-
         return (
             <div>
+                <RecipeList  recipes={this.state.recipes}/>
             </div>
         );
     }
